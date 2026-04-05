@@ -92,6 +92,24 @@ describe("normalizeCompatibilityConfig (whatsapp ackReaction migration)", () => 
     });
   });
 
+  it("no-ops when ackReactionScope is off", () => {
+    const cfg = baseCfg({
+      messages: { ackReaction: "👍", ackReactionScope: "off" },
+    } as Partial<Cfg>);
+    const { config, changes } = normalizeCompatibilityConfig({ cfg });
+    expect(config).toBe(cfg);
+    expect(changes).toHaveLength(0);
+  });
+
+  it("no-ops when ackReactionScope is none", () => {
+    const cfg = baseCfg({
+      messages: { ackReaction: "👍", ackReactionScope: "none" },
+    } as Partial<Cfg>);
+    const { config, changes } = normalizeCompatibilityConfig({ cfg });
+    expect(config).toBe(cfg);
+    expect(changes).toHaveLength(0);
+  });
+
   it("trims whitespace from legacy ackReaction value", () => {
     const cfg = baseCfg({
       messages: { ackReaction: "  👍  " },

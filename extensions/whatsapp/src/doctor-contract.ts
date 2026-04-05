@@ -15,6 +15,10 @@ export function normalizeCompatibilityConfig({
   }
 
   const legacyScope = cfg.messages?.ackReactionScope ?? "group-mentions";
+  // "off"/"none" means the user explicitly disabled ack reactions; do not migrate.
+  if (legacyScope === "off" || legacyScope === "none") {
+    return { config: cfg, changes: [] };
+  }
   let direct = true;
   let group: "always" | "mentions" | "never" = "mentions";
   if (legacyScope === "all") {
