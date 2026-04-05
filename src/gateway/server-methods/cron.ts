@@ -245,18 +245,17 @@ export const cronHandlers: GatewayRequestHandlers = {
       );
       return;
     }
-    const result = await context.cron.enqueueRun(jobId, p.mode ?? "force");
-    if (
-      result.ok &&
-      "ran" in result &&
-      !result.ran &&
-      "reason" in result &&
-      result.reason === "unsupported-spec"
-    ) {
+    let result;
+    try {
+      result = await context.cron.enqueueRun(jobId, p.mode ?? "force");
+    } catch (err) {
       respond(
         false,
         undefined,
-        errorShape(ErrorCodes.INVALID_REQUEST, "invalid cron sessionTarget session id"),
+        errorShape(
+          ErrorCodes.INVALID_REQUEST,
+          err instanceof Error ? err.message : "invalid cron job spec",
+        ),
       );
       return;
     }
